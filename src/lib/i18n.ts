@@ -195,7 +195,7 @@ export interface TranslationContent {
 export const translations: Translations = {
   en: {
     // Header
-    appName: 'GNI Ireland',
+    appName: 'Wales and West Utilities',
     appDescription: 'Gas leak detection and monitoring system',
     
     // Navigation
@@ -218,8 +218,8 @@ export const translations: Translations = {
       statistics: 'Statistics',
       lastUpdated: 'Last updated',
       totalDistance: 'Total Distance',
-      car1Distance: 'GNI Car #1',
-      car2Distance: 'GNI Car #2',
+      car1Distance: 'Vehicle #1',
+      car2Distance: 'Vehicle #2',
       distance: 'Distance',
       lisa: 'LISA',
       lisaPerKm: 'LISA/km',
@@ -252,7 +252,7 @@ export const translations: Translations = {
     
     // Footer
     footer: {
-      copyright: '© {year} GNI Ireland',
+      copyright: '© {year} Wales and West Utilities',
       version: 'Version'
     },
     
@@ -262,7 +262,7 @@ export const translations: Translations = {
       logout: 'Logout',
       loggingOut: 'Logging out...',
       loading: 'Loading...',
-      title: 'GNI Ireland'
+      title: 'Wales and West Utilities'
     },
     
     // Loading

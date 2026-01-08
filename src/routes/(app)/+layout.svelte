@@ -421,7 +421,7 @@
 		</button>
 		
 		<!-- Logo/Brand -->
-		<a href="/" class="header__brand" title="GNI Ireland">
+		<a href="/" class="header__brand" title="Wales and West Utilities">
 			<div class="header__logo">
 				<Flame size={18} />
 			</div>

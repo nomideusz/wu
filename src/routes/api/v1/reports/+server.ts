@@ -275,28 +275,28 @@ export const GET = async ({ url, locals }: RequestEvent) => {
         
         // Distance for specific vehicles (only from final reports with surveys)
         const car1Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #1')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #1')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
-            
+
         const car2Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #2')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #2')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car3Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #3')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #3')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car4Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #4')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #4')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
@@ -310,28 +310,28 @@ export const GET = async ({ url, locals }: RequestEvent) => {
         
         // Distance for specific vehicles (from draft reports with surveys)
         const car1DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #1')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #1')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
-            
+
         const car2DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #2')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #2')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car3DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #3')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #3')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car4DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'GNI Car #4')
+            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #4')
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
@@ -361,19 +361,19 @@ export const GET = async ({ url, locals }: RequestEvent) => {
         
         // Count unique indications per vehicle
         const uniqueCar1Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'GNI Car #1'
+            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #1'
         ).length;
-        
+
         const uniqueCar2Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'GNI Car #2'
+            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #2'
         ).length;
 
         const uniqueCar3Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'GNI Car #3'
+            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #3'
         ).length;
 
         const uniqueCar4Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'GNI Car #4'
+            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #4'
         ).length;
         
         // Calculate LISA per km metrics using unique indications

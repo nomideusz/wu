@@ -369,13 +369,13 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 	function sortVehiclesByCarNumber(vehicles: Map<string, any>) {
 		return Array.from(vehicles.entries())
 			.sort(([nameA], [nameB]) => {
-				// Extract car number from vehicle name (e.g., "GNI Car #1" -> 1)
+				// Extract car number from vehicle name (e.g., "Vehicle #1" -> 1)
 				const carNumberA = parseInt(nameA.replace(/.*#(\d+).*/, '$1')) || 999;
 				const carNumberB = parseInt(nameB.replace(/.*#(\d+).*/, '$1')) || 999;
 				return carNumberA - carNumberB;
 			})
 			.map(([name, data]) => ({
-				name: name.replace('GNI Car #', 'Car '),
+				name: name.replace('GNI Car #', 'Vehicle #'),
 				total: data.total,
 				final: data.final,
 				draft: data.draft
@@ -728,7 +728,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 								<Car size={20} />
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">GNI Car #1</span>
+								<span class="metric-card__label">Vehicle #1</span>
 								<div class="metric-card__value metric-card__value--compact">
 									{#if statsLoading}
 										<div class="skeleton-text"></div>
@@ -745,7 +745,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 								<Car size={20} />
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">GNI Car #2</span>
+								<span class="metric-card__label">Vehicle #2</span>
 								<div class="metric-card__value metric-card__value--compact">
 									{#if statsLoading}
 										<div class="skeleton-text"></div>
@@ -762,7 +762,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 								<Car size={20} />
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">GNI Car #3</span>
+								<span class="metric-card__label">Vehicle #3</span>
 								<div class="metric-card__value metric-card__value--compact">
 									{#if statsLoading}
 										<div class="skeleton-text"></div>
@@ -779,7 +779,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 								<Car size={20} />
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">GNI Car #4</span>
+								<span class="metric-card__label">Vehicle #4</span>
 								<div class="metric-card__value metric-card__value--compact">
 									{#if statsLoading}
 										<div class="skeleton-text"></div>

@@ -1,8 +1,8 @@
-# GNI Ireland Design System Documentation
+# Wales and West Utilities Design System Documentation
 
 ## Overview
 
-The GNI Ireland application uses a modern, cohesive design system built with CSS custom properties (CSS variables) and reusable components. This document outlines the design principles, components, and best practices.
+The Wales and West Utilities application uses a modern, cohesive design system built with CSS custom properties (CSS variables) and reusable components. This document outlines the design principles, components, and best practices.
 
 ## Core Design Principles
 

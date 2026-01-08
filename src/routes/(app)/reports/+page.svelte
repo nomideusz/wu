@@ -569,9 +569,9 @@
 			// Create workbook with cellStyles enabled
 			const wb = XLSX.utils.book_new();
 			wb.Props = {
-				Title: "GNI Reports Export",
+				Title: "Wales and West Utilities Reports Export",
 				Subject: "Survey Reports",
-				Author: "GNI System",
+				Author: "Wales and West Utilities System",
 				CreatedDate: new Date()
 			};
 
@@ -618,7 +618,7 @@
 			const surveysInfo = includeSurveysOnly ? '' : '_AllReports';
 			const searchInfo = searchQuery ? `_Search-${searchQuery.replace(/[^a-zA-Z0-9]/g, '')}` : '';
 			const selectionInfo = selectedReports.size > 0 ? `_Selected-${selectedReports.size}` : '';
-			const filename = `GNI_Reports_${filterInfo}${surveysInfo}${searchInfo}${selectionInfo}_${timestamp}.xlsx`;
+			const filename = `WalesWest_Reports_${filterInfo}${surveysInfo}${searchInfo}${selectionInfo}_${timestamp}.xlsx`;
 
 			// Write and download file
 			XLSX.writeFile(wb, filename);
