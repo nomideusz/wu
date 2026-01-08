@@ -11,7 +11,7 @@ export default defineConfig(({ mode }) => {
 		define: {
 			// Expose environment variables to the client
 			// Only expose variables that begin with 'PUBLIC_'
-			'process.env.POCKETBASE_URL': JSON.stringify(env.POCKETBASE_URL || 'https://g.zaur.app')
+			'process.env.POCKETBASE_URL': JSON.stringify(env.POCKETBASE_URL || 'https://w.zaur.app')
 		}
 	};
 });

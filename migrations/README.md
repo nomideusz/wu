@@ -8,7 +8,7 @@ The shared files feature now uses PocketBase for persistent storage instead of i
 ### Method 1: Import via PocketBase Admin UI
 
 1. **Access PocketBase Admin UI**
-   - Go to your PocketBase admin interface (usually `https://g.zaur.app/_/` or your configured URL)
+   - Go to your PocketBase admin interface (usually `https://w.zaur.app/_/` or your configured URL)
    - Log in with your admin credentials
 
 2. **Import Collection**
@@ -124,7 +124,7 @@ The `field_of_view` and `field_of_view_gaps` collections have both a text field 
 ### Migration Methods
 
 #### Method 1: JavaScript Migration (Recommended)
-1. Access PocketBase Admin UI at `https://g.zaur.app/_/`
+1. Access PocketBase Admin UI at `https://w.zaur.app/_/`
 2. Navigate to **Settings** > **Execute JavaScript**
 3. Copy the contents of `003_fix_field_of_view_relations.js`
 4. Paste and execute the script

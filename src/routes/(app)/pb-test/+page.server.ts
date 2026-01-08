@@ -7,7 +7,7 @@ export const load: PageServerLoad = async ({ locals }) => {
     
     try {
         // Get PocketBase URL
-        url = process.env.POCKETBASE_URL || 'https://g.zaur.app';
+        url = process.env.POCKETBASE_URL || 'https://w.zaur.app';
         
         // Check if PocketBase is accessible
         const response = await fetch(`${url}/api/health`);

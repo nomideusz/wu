@@ -5,7 +5,7 @@ import { writable } from 'svelte/store';
 
 // Get PocketBase URL from environment variables
 // For client-side, this is made available through Vite's define in vite.config.ts
-const POCKETBASE_URL = process.env.POCKETBASE_URL || 'https://g.zaur.app';
+const POCKETBASE_URL = process.env.POCKETBASE_URL || 'https://w.zaur.app';
 
 // Create PocketBase client instance
 // We'll use a different approach for client vs server
