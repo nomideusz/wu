@@ -61,6 +61,9 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 	let car2LisaPerKm = $state(0);
 	let car3LisaPerKm = $state(0);
 	let car4LisaPerKm = $state(0);
+	
+	// Dynamic vehicle metrics
+	let vehicleMetrics = $state<any[]>([]);
 	let weeklyTargetKm = $state(200);
 	let dailyTargetKm = $state(40);
 	let weeklyProgress = $state(0);
@@ -129,6 +132,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 			if (apiData.reports) {
 				reports = apiData.reports;
 				processDailyStats(apiData.reports);
+				processVehicleMetrics(apiData.reports);
 			}
 			
 			statsLoading = false;
@@ -341,6 +345,49 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 		dailyStats = stats;
 	}
 	
+	// Process overall vehicle metrics from all reports
+	function processVehicleMetrics(reportsData: any[]) {
+		const vehiclesObj = new Map<string, { total: number, final: number, draft: number }>();
+		
+		reportsData.forEach((report: any) => {
+			const distance = Number(report.dist_mains_covered_length || 0);
+			const isFinal = report.report_final === true || report.report_final === 1 || report.report_final === '1';
+			const rawName = report.surveyor_unit_desc || 'Unknown';
+			
+			// Normalize name immediately
+			const match = rawName.match(/#(\d+)/);
+			const vehicleName = match ? `Vehicle #${match[1]}` : rawName;
+			
+			if (!vehiclesObj.has(vehicleName)) {
+				vehiclesObj.set(vehicleName, { total: 0, final: 0, draft: 0 });
+			}
+			
+			const data = vehiclesObj.get(vehicleName)!;
+			data.total += distance;
+			
+			if (isFinal) {
+				data.final += distance;
+			} else {
+				data.draft += distance;
+			}
+		});
+		
+		// Sort by vehicle number and filter out empty ones
+		vehicleMetrics = Array.from(vehiclesObj.entries())
+			.sort(([nameA], [nameB]) => {
+				const carNumberA = parseInt(nameA.replace(/.*#(\d+).*/, '$1')) || 999;
+				const carNumberB = parseInt(nameB.replace(/.*#(\d+).*/, '$1')) || 999;
+				return carNumberA - carNumberB;
+			})
+			.map(([name, data]) => ({
+				name,
+				total: data.total,
+				final: data.final,
+				draft: data.draft
+			}))
+			.filter(v => v.total > 0 || v.final > 0 || v.draft > 0);
+	}
+	
 	// Helper function to get week start (Monday 12:00 UTC)
 	function getWeekStart(date: Date): Date {
 		const currentUtc = new Date(date);
@@ -374,12 +421,18 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 				const carNumberB = parseInt(nameB.replace(/.*#(\d+).*/, '$1')) || 999;
 				return carNumberA - carNumberB;
 			})
-			.map(([name, data]) => ({
-				name: name.replace('GNI Car #', 'Vehicle #'),
-				total: data.total,
-				final: data.final,
-				draft: data.draft
-			}));
+			.map(([name, data]) => {
+				// Normalize name to "Vehicle #N" for display if it contains a number
+				const match = name.match(/#(\d+)/);
+				const displayName = match ? `Vehicle #${match[1]}` : name;
+				
+				return {
+					name: displayName,
+					total: data.total,
+					final: data.final,
+					draft: data.draft
+				};
+			});
 	}
 
 	// Debug logging using a function to capture current state values
@@ -446,6 +499,7 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 					reports = dashData.reports || [];
 					recentReports = dashData.recentReports || [];
 					processDailyStats(dashData.reports || []);
+					processVehicleMetrics(dashData.reports || []);
 					reportsLoading = false;
 
 					// Set stats data - calculate from filtered reports data
@@ -555,15 +609,9 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 		color: var(--color-text-primary);
 	}
 
-	.dashboard__metrics--vehicles {
+	.dashboard__metrics--combined {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-		gap: 1rem;
-	}
-
-	.dashboard__metrics--survey {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 		gap: 1rem;
 	}
 
@@ -716,120 +764,91 @@ import RefreshCw from 'lucide-svelte/icons/refresh-cw';
 					</div>
 				</div>
 
-				<!-- Vehicle Performance Section -->
-				<div class="dashboard__metrics-section">
-					<h3 class="dashboard__metrics-title">
-						<Car size={18} />
-						Vehicle Performance
-					</h3>
-					<div class="dashboard__metrics dashboard__metrics--vehicles">
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact">
-								<Car size={20} />
-							</div>
-							<div class="metric-card__content">
-								<span class="metric-card__label">Vehicle #1</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
-										{car1Distance.toFixed(1)} km
-										<span class="metric-card__sub">({car1DraftDistance.toFixed(1)} draft)</span>
-									{/if}
-								</div>
-							</div>
-						</div>
-
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact">
-								<Car size={20} />
-							</div>
-							<div class="metric-card__content">
-								<span class="metric-card__label">Vehicle #2</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
-										{car2Distance.toFixed(1)} km
-										<span class="metric-card__sub">({car2DraftDistance.toFixed(1)} draft)</span>
-									{/if}
-								</div>
-							</div>
-						</div>
-
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact">
-								<Car size={20} />
-							</div>
-							<div class="metric-card__content">
-								<span class="metric-card__label">Vehicle #3</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
-										{car3Distance.toFixed(1)} km
-										<span class="metric-card__sub">({car3DraftDistance.toFixed(1)} draft)</span>
-									{/if}
-								</div>
-							</div>
-						</div>
-
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact">
-								<Car size={20} />
-							</div>
-							<div class="metric-card__content">
-								<span class="metric-card__label">Vehicle #4</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
-										{car4Distance.toFixed(1)} km
-										<span class="metric-card__sub">({car4DraftDistance.toFixed(1)} draft)</span>
-									{/if}
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-
-				<!-- Survey Findings Section -->
+				<!-- Performance & Findings Section -->
 				<div class="dashboard__metrics-section">
 					<h3 class="dashboard__metrics-title">
 						<Activity size={18} />
-						LISAs and Gaps
+						Performance & Findings
 					</h3>
-					<div class="dashboard__metrics dashboard__metrics--survey">
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact metric-card__icon--success">
-								<Activity size={20} />
+					<div class="dashboard__metrics dashboard__metrics--combined">
+						<!-- Vehicle Cards -->
+						{#if vehicleMetrics.length > 0}
+							{#each vehicleMetrics as vehicle}
+								<div class="metric-card {statsLoading ? 'metric-card--loading' : ''}">
+									<div class="metric-card__header">
+										<span class="metric-card__label">{vehicle.name}</span>
+										<div class="metric-card__icon">
+											<Car size={24} />
+										</div>
+									</div>
+									
+									<div class="metric-card__content">
+										{#if statsLoading}
+											<div class="skeleton-text skeleton-text--large"></div>
+										{:else}
+											<div class="metric-card__value">
+												{vehicle.final.toFixed(1)}
+												<span class="metric-card__unit">km</span>
+											</div>
+											<div class="metric-card__sub">
+												+ {vehicle.draft.toFixed(1)} km in draft
+											</div>
+										{/if}
+									</div>
+								</div>
+							{/each}
+						{:else if !statsLoading}
+							<div class="metric-card">
+								<div class="metric-card__content">
+									<div class="metric-card__value" style="font-size: 1.5rem; color: var(--text-secondary);">
+										No vehicles found
+									</div>
+									<span class="metric-card__label">Check reports data</span>
+								</div>
+							</div>
+						{/if}
+
+						<!-- LISA Card -->
+						<div class="metric-card {statsLoading ? 'metric-card--loading' : ''}">
+							<div class="metric-card__header">
+								<span class="metric-card__label">LISA Indications</span>
+								<div class="metric-card__icon metric-card__icon--success">
+									<Activity size={24} />
+								</div>
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">LISA Indications</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
+								{#if statsLoading}
+									<div class="skeleton-text skeleton-text--large"></div>
+								{:else}
+									<div class="metric-card__value">
 										{totalIndications}
-										<span class="metric-card__sub">({totalLisaPerKm.toFixed(2)}/km)</span>
-									{/if}
-								</div>
+									</div>
+									<div class="metric-card__sub">
+										{totalLisaPerKm.toFixed(2)} / km
+									</div>
+								{/if}
 							</div>
 						</div>
 
-						<div class="metric-card metric-card--compact {statsLoading ? 'metric-card--loading' : ''}">
-							<div class="metric-card__icon metric-card__icon--compact metric-card__icon--warning">
-								<AlertTriangle size={20} />
+						<!-- Gaps Card -->
+						<div class="metric-card {statsLoading ? 'metric-card--loading' : ''}">
+							<div class="metric-card__header">
+								<span class="metric-card__label">Field of View Gaps</span>
+								<div class="metric-card__icon metric-card__icon--warning">
+									<AlertTriangle size={24} />
+								</div>
 							</div>
 							<div class="metric-card__content">
-								<span class="metric-card__label">Field of View Gaps</span>
-								<div class="metric-card__value metric-card__value--compact">
-									{#if statsLoading}
-										<div class="skeleton-text"></div>
-									{:else}
+								{#if statsLoading}
+									<div class="skeleton-text skeleton-text--large"></div>
+								{:else}
+									<div class="metric-card__value">
 										{totalGaps}
-									{/if}
-								</div>
+									</div>
+									<div class="metric-card__sub">
+										Detected gaps
+									</div>
+								{/if}
 							</div>
 						</div>
 					</div>

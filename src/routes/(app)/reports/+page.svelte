@@ -45,10 +45,7 @@
 	let syncInfo = $state<any>(null);
 	
 	// Car data (distances only)
-	let car1Distance = $state(0);
-	let car2Distance = $state(0);
-	let car3Distance = $state(0);
-	let car4Distance = $state(0);
+	let vehicleMetrics = $state<any[]>([]);
 	
 	let reports = $state<Report[]>([]);
 	let displayedReports = $state<Report[]>([]);
@@ -664,6 +661,49 @@
 		return totalAssets > 0 ? (coveredAssets / totalAssets) * 100 : 0;
 	});
 
+	// Process vehicle metrics from reports (dynamically)
+	function processVehicleMetrics(reportsData: any[]) {
+		const vehiclesObj = new Map<string, { total: number, final: number, draft: number }>();
+		
+		reportsData.forEach((report: any) => {
+			const distance = Number(report.dist_mains_covered_length || 0);
+			const isFinal = report.report_final === true || report.report_final === 1 || report.report_final === '1';
+			const rawName = report.surveyor_unit_desc || 'Unknown';
+			
+			// Normalize name immediately
+			const match = rawName.match(/#(\d+)/);
+			const vehicleName = match ? `Vehicle #${match[1]}` : rawName;
+			
+			if (!vehiclesObj.has(vehicleName)) {
+				vehiclesObj.set(vehicleName, { total: 0, final: 0, draft: 0 });
+			}
+			
+			const data = vehiclesObj.get(vehicleName)!;
+			data.total += distance;
+			
+			if (isFinal) {
+				data.final += distance;
+			} else {
+				data.draft += distance;
+			}
+		});
+		
+		// Sort by vehicle number and filter out empty ones
+		vehicleMetrics = Array.from(vehiclesObj.entries())
+			.sort(([nameA], [nameB]) => {
+				const carNumberA = parseInt(nameA.replace(/.*#(\d+).*/, '$1')) || 999;
+				const carNumberB = parseInt(nameB.replace(/.*#(\d+).*/, '$1')) || 999;
+				return carNumberA - carNumberB;
+			})
+			.map(([name, data]) => ({
+				name,
+				total: data.total,
+				final: data.final,
+				draft: data.draft
+			}))
+			.filter(v => v.total > 0 || v.final > 0 || v.draft > 0);
+	}
+
 	// Function to load data
 	const loadData = async () => {
 		loading = true;
@@ -797,11 +837,8 @@
 			totalLISAs = result.stats.totalIndications || 0;
 			totalGaps = result.stats.totalGaps || 0;
 			
-			// Load car distance data from API
-			car1Distance = result.stats.car1Distance || 0;
-			car2Distance = result.stats.car2Distance || 0;
-			car3Distance = result.stats.car3Distance || 0;
-			car4Distance = result.stats.car4Distance || 0;
+			// Calculate vehicle metrics from loaded reports
+			processVehicleMetrics(reports);
 			
 			// Fetch sync info from centralized API
 							try {
@@ -891,10 +928,7 @@
 						totalCoverage={totalCoverage()}
 						{totalLISAs}
 						{totalGaps}
-						{car1Distance}
-						{car2Distance}
-						{car3Distance}
-						{car4Distance}
+						{vehicleMetrics}
 					/>
 
 					<!-- Filter Controls -->

@@ -273,30 +273,38 @@ export const GET = async ({ url, locals }: RequestEvent) => {
             return sum + distance;
         }, 0);
         
+        // Helper to check if a vehicle description matches a specific car number
+        const isCarNumber = (desc: string, number: number) => {
+            if (!desc) return false;
+            // Match #1, #01, etc. inside the string
+            const match = desc.match(/#(\d+)/);
+            return match ? parseInt(match[1], 10) === number : false;
+        };
+
         // Distance for specific vehicles (only from final reports with surveys)
         const car1Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #1')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 1))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car2Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #2')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 2))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car3Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #3')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 3))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car4Distance = finalReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #4')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 4))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
@@ -310,28 +318,28 @@ export const GET = async ({ url, locals }: RequestEvent) => {
         
         // Distance for specific vehicles (from draft reports with surveys)
         const car1DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #1')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 1))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car2DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #2')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 2))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car3DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #3')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 3))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
             }, 0);
 
         const car4DraftDistance = draftReportsWithSurveys
-            .filter((r: any) => r.surveyor_unit_desc === 'Vehicle #4')
+            .filter((r: any) => isCarNumber(r.surveyor_unit_desc, 4))
             .reduce((sum: number, report: any) => {
                 const distance = report.dist_mains_covered_length ? Number(report.dist_mains_covered_length) : 0;
                 return sum + distance;
@@ -361,19 +369,19 @@ export const GET = async ({ url, locals }: RequestEvent) => {
         
         // Count unique indications per vehicle
         const uniqueCar1Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #1'
+            (indication: any) => isCarNumber(indication.surveyor_unit_desc, 1)
         ).length;
 
         const uniqueCar2Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #2'
+            (indication: any) => isCarNumber(indication.surveyor_unit_desc, 2)
         ).length;
 
         const uniqueCar3Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #3'
+            (indication: any) => isCarNumber(indication.surveyor_unit_desc, 3)
         ).length;
 
         const uniqueCar4Indications = uniqueIndicationsArray.filter(
-            (indication: any) => indication.surveyor_unit_desc === 'Vehicle #4'
+            (indication: any) => isCarNumber(indication.surveyor_unit_desc, 4)
         ).length;
         
         // Calculate LISA per km metrics using unique indications

@@ -6,10 +6,7 @@
 		totalCoverage?: number;
 		totalLISAs?: number;
 		totalGaps?: number;
-		car1Distance?: number;
-		car2Distance?: number;
-		car3Distance?: number;
-		car4Distance?: number;
+		vehicleMetrics?: any[];
 	}
 
 	let { 
@@ -18,10 +15,7 @@
 		totalCoverage = 0, 
 		totalLISAs = 0, 
 		totalGaps = 0,
-		car1Distance = 0,
-		car2Distance = 0,
-		car3Distance = 0,
-		car4Distance = 0
+		vehicleMetrics = []
 	}: Props = $props();
 </script>
 
@@ -83,33 +77,22 @@
 			<h3>Vehicles (Final Reports)</h3>
 		</div>
 		<div class="stats-section-content">
-			<div class="stats-metric stats-metric--vehicle">
-				<div class="stats-content">
-					<div class="stats-value">{car1Distance.toFixed(1)}</div>
-					<div class="stats-label">Car #1 (km)</div>
+			{#if vehicleMetrics.length > 0}
+				{#each vehicleMetrics as vehicle}
+					<div class="stats-metric stats-metric--vehicle">
+						<div class="stats-content">
+							<div class="stats-value">{vehicle.final.toFixed(1)}</div>
+							<div class="stats-label">{vehicle.name} (km)</div>
+						</div>
+					</div>
+				{/each}
+			{:else}
+				<div class="stats-metric stats-metric--dimmed">
+					<div class="stats-content">
+						<div class="stats-label">No vehicles found</div>
+					</div>
 				</div>
-			</div>
-			
-			<div class="stats-metric stats-metric--vehicle">
-				<div class="stats-content">
-					<div class="stats-value">{car2Distance.toFixed(1)}</div>
-					<div class="stats-label">Car #2 (km)</div>
-				</div>
-			</div>
-			
-			<div class="stats-metric stats-metric--vehicle">
-				<div class="stats-content">
-					<div class="stats-value">{car3Distance.toFixed(1)}</div>
-					<div class="stats-label">Car #3 (km)</div>
-				</div>
-			</div>
-			
-			<div class="stats-metric stats-metric--vehicle">
-				<div class="stats-content">
-					<div class="stats-value">{car4Distance.toFixed(1)}</div>
-					<div class="stats-label">Car #4 (km)</div>
-				</div>
-			</div>
+			{/if}
 		</div>
 	</div>
 </div>
